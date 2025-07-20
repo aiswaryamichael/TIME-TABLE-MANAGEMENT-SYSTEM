@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Timetable</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #timetableGrid {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #timetableGrid th, #timetableGrid td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+            font-size: 10px;
+        }
+        .break {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+        .restricted {
+            background-color: #f8d7da;
+        }
+        .library {
+            background-color: #d1ecf1;
+        }
+        .pt {
+            background-color: #d4edda;
+        }
+        .wop {
+            background-color: #f0e68c;
+        }
+        .home-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background-color: orange;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            color: white;
+        }
+        .print-btn {
+            margin: 10px 0;
+            padding: 10px 15px;
+            cursor: pointer;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        .semester-selector {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+        .semester-selector select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        /* Print-specific styles */
+        @media print {
+            .print-btn, .home-btn, .semester-selector {
+                display: none;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            .header h2, .header h3, .header h4 {
+                margin: 5px 0;
+            }
+            #timetableGrid {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 0 auto;
+            }
+            #timetableGrid th, #timetableGrid td {
+                border: 1px solid #000;
+                padding: 5px;
+                text-align: center;
+                font-size: 10px;
+            }
+            .break {
+                background-color: #e0e0e0;
+                font-weight: bold;
+            }
+            .restricted {
+                background-color: #f8d7da;
+            }
+            .library {
+                background-color: #d1ecf1;
+            }
+            .pt {
+                background-color: #d4edda;
+            }
+            .wop {
+                background-color: #f0e68c;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h2>Toc H Institute of Science & Technology</h2>
+        <h3>Department of Information Technology</h3>
+        <h4>Student Timetable</h4>
+    </div>
+
+    <div class="semester-selector">
+        <label for="semesterSelect">Select Semester: </label>
+        <select id="semesterSelect" onchange="changeSemester()">
+            <option value="1">Semester 1</option>
+            <option value="2">Semester 2</option>
+            <option value="3">Semester 3</option>
+            <option value="4">Semester 4</option>
+        </select>
+    </div>
+
+    <div id="timetableContainer">
+        <table id="timetableGrid">
+            <thead>
+                <tr>
+                    <th>Day</th>
+                    <th>9:00 to 9:50</th>
+                    <th>9:50 to 10:40</th>
+                    <th>10:40 to 10:50 (Break)</th>
+                    <th>10:50 to 11:40</th>
+                    <th>11:40 to 12:30</th>
+                    <th>12:30 to 1:20 (Break)</th>
+                    <th>1:20 to 2:10</th>
+                    <th>2:10 to 3:00</th>
+                    <th>3:00 to 3:10 (Break)</th>
+                    <th>3:10 to 4:00</th>
+                </tr>
+            </thead>
+            <tbody id="timetableBody">
+                <!-- Timetable rows will be dynamically populated -->
+            </tbody>
+        </table>
+    </div>
+
+    <button class="print-btn" onclick="window.print()">Print Timetable</button>
+    <button class="home-btn" onclick="goToHomePage()">Back to Home</button>
+
+    <script>
+        let currentSemester = "1";
+
+        function changeSemester() {
+            currentSemester = document.getElementById('semesterSelect').value;
+            renderTimetable();
+        }
+
+        function getTimetableData() {
+            const savedTimetables = JSON.parse(localStorage.getItem('timetables')) || {};
+            return savedTimetables[currentSemester] || {};
+        }
+
+        function getSubjectColor(subject) {
+            const subjectColors = JSON.parse(localStorage.getItem('subjectColors')) || {};
+            return subjectColors[subject] || '#FFFFFF';
+        }
+
+        function renderTimetable() {
+            const timetableBody = document.getElementById('timetableBody');
+            timetableBody.innerHTML = '';
+            const timetableData = getTimetableData();
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const periods = 10;
+
+            days.forEach(day => {
+                const row = timetableBody.insertRow();
+                const dayCell = row.insertCell(0);
+                dayCell.textContent = day;
+
+                for (let i = 0; i < periods; i++) {
+                    const periodCell = row.insertCell();
+                    const periodData = timetableData[day] ? timetableData[day][i] : null;
+
+                    if (periodData) {
+                        if (periodData.type === 'break') {
+                            periodCell.classList.add('break');
+                            periodCell.textContent = periodData.subject;
+                        } else if (periodData.type === 'restricted') {
+                            periodCell.classList.add('restricted');
+                            periodCell.textContent = 'NOT AVAILABLE';
+                        } else if (periodData.type === 'library') {
+                            periodCell.classList.add('library');
+                            periodCell.innerHTML = `${periodData.subject}<br>(${periodData.teacher || ''})`;
+                        } else if (periodData.type === 'pt') {
+                            periodCell.classList.add('pt');
+                            periodCell.innerHTML = `${periodData.subject}<br>(${periodData.teacher || ''})`;
+                        } else if (periodData.type === 'wop') {
+                            periodCell.classList.add('wop');
+                            periodCell.innerHTML = `${periodData.subject}<br>(${periodData.teacher || ''})`;
+                        } else {
+                            const subjectColor = getSubjectColor(periodData.subject);
+                            periodCell.style.backgroundColor = subjectColor;
+                            periodCell.innerHTML = `${periodData.subject}<br>(${periodData.teacher || ''})`;
+                        }
+                    } else {
+                        periodCell.textContent = '-';
+                    }
+                }
+            });
+        }
+
+        function goToHomePage() {
+            window.location.href = 'index.html';
+        }
+
+        // Render the timetable on page load
+        renderTimetable();
+    </script>
+</body>
+</html>

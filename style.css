@@ -1,0 +1,178 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+  }
+  
+  /* Login/Signup Container */
+  .login-container,
+  .signup-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+  }
+  
+  .login-box,
+  .signup-box {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 30px;
+  }
+  
+  /* Form Styles */
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+    box-sizing: border-box;
+  }
+  
+  input:focus {
+    border-color: #4CAF50;
+    outline: none;
+  }
+  
+  .password-container {
+    position: relative;
+  }
+  
+  .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  /* Button Styles */
+  .btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+  }
+  
+  .btn:hover {
+    background-color: #45a049;
+  }
+  
+  .login-btn, .signup-btn {
+    margin-top: 20px;
+  }
+  
+  /* Links */
+  .switch-form {
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 20px;
+  }
+  
+  .switch-link {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .switch-link:hover {
+    text-decoration: underline;
+  }
+  
+  /* Messages */
+  .error-message {
+    color: #f44336;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    display: none;
+  }
+  
+  .success-message {
+    color: #4CAF50;
+    font-size: 0.9rem;
+    margin-top: 15px;
+    display: none;
+  }
+  
+  /* Role Selection Page */
+  .role-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin: 30px 0;
+  }
+  
+  .role-btn {
+    padding: 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .role-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .admin {
+    background-color: #f44336;
+  }
+  
+  .teacher {
+    background-color: #2196F3;
+  }
+  
+  .student {
+    background-color: #4CAF50;
+  }
+
+  /* Back button style */
+.back-btn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    color: #333;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .back-btn:hover {
+    color: #4CAF50;
+  }
+  
+  /* Adjust login/signup box padding to accommodate back button */
+  .login-box, .signup-box {
+    position: relative;
+    padding: 50px 30px 30px;
+  }

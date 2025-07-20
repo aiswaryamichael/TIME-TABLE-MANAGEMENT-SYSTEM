@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="signup-container">
+    <div class="signup-box">
+      <!-- Back button -->
+      <a href="index.html" class="back-btn">← Back</a>
+      
+      <h1 id="signupTitle">Signup</h1>
+      
+      <form id="signupForm">
+        <div class="form-group">
+          <input type="text" id="signupUsername" name="username" placeholder="Username" required>
+        </div>
+        <div class="form-group password-container">
+          <input type="password" id="signupPassword" name="password" placeholder="Create password" required>
+          <span class="toggle-password">👁️</span>
+        </div>
+        <div class="form-group password-container">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required>
+          <span class="toggle-password">👁️</span>
+        </div>
+        
+        <input type="hidden" id="signupRole" name="role">
+        
+        <button type="submit" class="btn signup-btn">Signup</button>
+      </form>
+
+      <p class="switch-form">Already have an account? 
+        <a href="#" id="loginLink" class="switch-link">Login</a>
+      </p>
+
+      <p id="error-message" class="error-message"></p>
+      <p id="success-message" class="success-message"></p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      function simpleHash(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          const char = str.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash;
+        }
+        return hash.toString();
+      }
+
+      // Get role from URL parameter
+      const urlParams = new URLSearchParams(window.location.search);
+      const role = urlParams.get('role');
+      
+      if (!role || !['admin', 'teacher', 'student'].includes(role)) {
+        alert('Invalid access. Please select a role from the home page.');
+        window.location.href = 'index.html';
+        return;
+      }
+
+      // Set the role and update title
+      document.getElementById('signupRole').value = role;
+      document.getElementById('signupTitle').textContent = `${role.charAt(0).toUpperCase() + role.slice(1)} Signup`;
+      
+      // Update login link with the current role
+      document.getElementById('loginLink').href = `login.html?role=${role}`;
+
+      document.querySelectorAll('.toggle-password').forEach(toggle => {
+        toggle.addEventListener('click', function() {
+          const input = this.previousElementSibling;
+          if (input.type === 'password') {
+            input.type = 'text';
+          } else {
+            input.type = 'password';
+          }
+        });
+      });
+
+      document.getElementById('signupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const username = document.getElementById('signupUsername').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const role = document.getElementById('signupRole').value;
+        
+        if (!username || !password || !confirmPassword) {
+          showAlert('Please fill all fields', 'error');
+          return;
+        }
+        
+        if (password !== confirmPassword) {
+          showAlert('Passwords do not match!', 'error');
+          return;
+        }
+        
+        if (password.length < 6) {
+          showAlert('Password must be at least 6 characters long', 'error');
+          return;
+        }
+        
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        
+        if (users.some(u => u.username === username && u.role === role)) {
+          showAlert('Username already exists for this role!', 'error');
+          return;
+        }
+        
+        users.push({
+          username: username,
+          password: simpleHash(password),
+          role: role
+        });
+        
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        showAlert('Account created successfully! Redirecting to login...', 'success');
+        
+        setTimeout(() => {
+          window.location.href = `login.html?role=${role}`;
+        }, 1500);
+      });
+
+      function showAlert(message, type) {
+        const errorMsg = document.getElementById('error-message');
+        const successMsg = document.getElementById('success-message');
+        
+        if (type === 'error') {
+          errorMsg.textContent = message;
+          successMsg.textContent = '';
+          errorMsg.style.display = 'block';
+          successMsg.style.display = 'none';
+        } else {
+          successMsg.textContent = message;
+          errorMsg.textContent = '';
+          successMsg.style.display = 'block';
+          errorMsg.style.display = 'none';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
